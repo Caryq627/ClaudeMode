@@ -417,4 +417,4 @@ printf '\033[%d;1H\033[2K' "$center_r"
 sleep 0.12
 
 tput cnorm ; clear
-exec /opt/homebrew/bin/claude
+exec /Users/cq/.local/bin/claude
