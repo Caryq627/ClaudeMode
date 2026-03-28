@@ -1,0 +1,9 @@
+{
+  "name": "mindspark-games",
+  "version": "1.0.0",
+  "description": "Terminal Based Games from MindSpark",
+  "scripts": {
+    "termijump": "node termijump.js",
+    "cryptiqtitle": "node cryptiqtitle.js"
+  }
+}

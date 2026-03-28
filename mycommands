@@ -21,6 +21,7 @@ echo -e "  ${AMBER}claudemode${RST}      ${DIM}4 Claude windows in quadrants (or
 echo -e "  ${AMBER}claudewall${RST}      ${DIM}6 Claude windows in 3x2 grid (all 6 color themes)${RST}"
 echo ""
 echo -e "${WHITE}${BOLD}  VISUALS${RST}"
+echo -e "  ${AMBER}visualize${RST}       ${DIM}Full-screen music visualizer (reacts to audio via mic)${RST}"
 echo -e "  ${AMBER}clauderain${RST}      ${DIM}Matrix-style falling rain in Claude amber/orange theme${RST}"
 echo -e "  ${AMBER}claudeglow${RST}      ${DIM}Neon cyberpunk terminal color theme ${WHITE}[reset]${RST}"
 echo ""
