@@ -1,0 +1,36 @@
+#!/bin/bash
+# mycommands — Shows all custom terminal commands
+
+ORANGE='\033[38;5;208m'
+AMBER='\033[38;5;214m'
+GOLD='\033[38;5;220m'
+DIM='\033[38;5;240m'
+WHITE='\033[1;37m'
+BOLD='\033[1m'
+RST='\033[0m'
+
+echo ""
+echo -e "${ORANGE}${BOLD}  ═══════════════════════════════════════════${RST}"
+echo -e "${GOLD}${BOLD}          ⚡ My Custom Commands ⚡${RST}"
+echo -e "${ORANGE}${BOLD}  ═══════════════════════════════════════════${RST}"
+echo ""
+echo -e "${WHITE}${BOLD}  LAUNCHERS${RST}"
+echo -e "  ${AMBER}claude${RST}          ${DIM}Launch Claude with cinematic orange boot animation${RST}"
+echo -e "  ${AMBER}claudelaunch${RST}    ${DIM}Boot animation with color theme ${WHITE}[orange|cyan|magenta|green|blue|purple]${RST}"
+echo -e "  ${AMBER}claudemode${RST}      ${DIM}4 Claude windows in quadrants (orange, cyan, magenta, green)${RST}"
+echo -e "  ${AMBER}claudewall${RST}      ${DIM}6 Claude windows in 3x2 grid (all 6 color themes)${RST}"
+echo ""
+echo -e "${WHITE}${BOLD}  VISUALS${RST}"
+echo -e "  ${AMBER}clauderain${RST}      ${DIM}Matrix-style falling rain in Claude amber/orange theme${RST}"
+echo -e "  ${AMBER}claudeglow${RST}      ${DIM}Neon cyberpunk terminal color theme ${WHITE}[reset]${RST}"
+echo ""
+echo -e "${WHITE}${BOLD}  WINDOW MANAGEMENT${RST}"
+echo -e "  ${AMBER}terminate${RST}       ${DIM}Close the current Terminal window${RST}"
+echo -e "  ${AMBER}terminateall${RST}    ${DIM}Close all Terminal windows${RST}"
+echo ""
+echo -e "${WHITE}${BOLD}  REFERENCE${RST}"
+echo -e "  ${AMBER}mycommands${RST}      ${DIM}Show this list${RST}"
+echo ""
+echo -e "${ORANGE}${BOLD}  ═══════════════════════════════════════════${RST}"
+echo -e "  ${DIM}Commands live in ~/.local/bin/${RST}"
+echo ""

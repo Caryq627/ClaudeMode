@@ -1,0 +1,120 @@
+#!/bin/bash
+# clauderain — Dense Matrix-style falling rain with Claude/AI theme
+# Press Ctrl+C to exit
+
+cleanup() {
+    printf '\033[0m'
+    tput cnorm
+    tput rmcup
+    exit 0
+}
+trap cleanup INT TERM
+
+tput smcup
+tput civis
+
+COLS=$(tput cols)
+ROWS=$(tput lines)
+
+# Character pool
+CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&*<>{}[]|~ΣΩπλμδφψαβγ═║╗╔╚╝░▒▓█"
+
+# Color escape codes (head → tail fade)
+HEAD=$'\033[1;38;5;230m'     # bright white-gold (glowing head)
+C1=$'\033[1;38;5;220m'       # bright gold
+C2=$'\033[38;5;214m'         # amber
+C3=$'\033[38;5;208m'         # orange
+C4=$'\033[38;5;172m'         # dark orange
+C5=$'\033[38;5;130m'         # brown-orange
+C6=$'\033[38;5;94m'          # dark brown
+C7=$'\033[38;5;58m'          # very dark
+C8=$'\033[38;5;236m'         # nearly black
+SP=' '
+
+# State arrays — every column can have a drop
+declare -a dy dspeed dlen dactive dwait
+
+# Initialize columns (every column, staggered start)
+for (( c=0; c<COLS; c++ )); do
+    dy[$c]=$(( -(RANDOM % (ROWS + 20)) ))
+    dspeed[$c]=$(( (RANDOM % 3) + 1 ))
+    dlen[$c]=$(( (RANDOM % 12) + 6 ))
+    dactive[$c]=1
+    dwait[$c]=0
+done
+
+# Pre-generate random chars function (avoid repeated RANDOM in hot loop)
+rand_char() {
+    printf '%s' "${CHARS:$((RANDOM % ${#CHARS})):1}"
+}
+
+while true; do
+    buf=""
+
+    for (( c=0; c<COLS; c++ )); do
+        # Skip some columns for visual variety (not every single col)
+        (( c % 2 == 0 && RANDOM % 10 < 3 )) && continue
+
+        y=${dy[$c]}
+        len=${dlen[$c]}
+        speed=${dspeed[$c]}
+
+        # Advance
+        dy[$c]=$(( y + speed ))
+
+        ch="${CHARS:$((RANDOM % ${#CHARS})):1}"
+
+        # Head — bright glowing character
+        if (( y >= 0 && y < ROWS )); then
+            buf+="\033[$(( y + 1 ));$(( c + 1 ))H${HEAD}${ch}"
+        fi
+
+        # Body gradient — fade from bright to dim
+        if (( y-1 >= 0 && y-1 < ROWS )); then
+            buf+="\033[$(( y ));$(( c + 1 ))H${C1}${CHARS:$((RANDOM % ${#CHARS})):1}"
+        fi
+        if (( y-2 >= 0 && y-2 < ROWS )); then
+            buf+="\033[$(( y - 1 ));$(( c + 1 ))H${C2}${CHARS:$((RANDOM % ${#CHARS})):1}"
+        fi
+        if (( y-3 >= 0 && y-3 < ROWS )); then
+            buf+="\033[$(( y - 2 ));$(( c + 1 ))H${C3}${CHARS:$((RANDOM % ${#CHARS})):1}"
+        fi
+        if (( y-4 >= 0 && y-4 < ROWS )); then
+            buf+="\033[$(( y - 3 ));$(( c + 1 ))H${C4}${CHARS:$((RANDOM % ${#CHARS})):1}"
+        fi
+
+        # Tail — progressively dimmer
+        for (( t=5; t<=len; t++ )); do
+            ty=$(( y - t ))
+            if (( ty >= 0 && ty < ROWS )); then
+                if (( t < len/2 )); then
+                    buf+="\033[$(( ty + 1 ));$(( c + 1 ))H${C5}${CHARS:$((RANDOM % ${#CHARS})):1}"
+                elif (( t < len - 2 )); then
+                    buf+="\033[$(( ty + 1 ));$(( c + 1 ))H${C6}·"
+                elif (( t < len )); then
+                    buf+="\033[$(( ty + 1 ));$(( c + 1 ))H${C7}."
+                fi
+            fi
+        done
+
+        # Erase — clear characters after tail passes
+        for (( e=0; e<speed+1; e++ )); do
+            ey=$(( y - len - e ))
+            if (( ey >= 0 && ey < ROWS )); then
+                buf+="\033[$(( ey + 1 ));$(( c + 1 ))H "
+            fi
+        done
+
+        # Reset drop when fully off screen
+        if (( y - len - 2 > ROWS )); then
+            dy[$c]=$(( -(RANDOM % (ROWS / 2 + 10)) - 1 ))
+            dspeed[$c]=$(( (RANDOM % 3) + 1 ))
+            dlen[$c]=$(( (RANDOM % 12) + 6 ))
+        fi
+    done
+
+    # Flush entire frame at once
+    printf '%b' "$buf"
+
+    sleep 0.04
+done

@@ -1,0 +1,420 @@
+#!/bin/bash
+# claudelaunch — rain → scanline logo reveal → hold → glitch → terminator → Claude
+THEME="${1:-orange}"
+
+case "$THEME" in
+    cyan)
+        BG_RGB="0a/16/1f"  ; FG_RGB="4e/e0/e6"  ; CUR_RGB="00/e5/ff"
+        BG_ANSI="{2570, 5654, 7967}"  ; FG_ANSI="{20046, 57568, 58982}"  ; CUR_ANSI="{0, 58853, 65535}"
+        HEAD=$'\033[1;38;5;195m' ; C1=$'\033[1;38;5;159m' ; C2=$'\033[38;5;123m'
+        C3=$'\033[38;5;87m'  ; C4=$'\033[38;5;51m'  ; C5=$'\033[38;5;44m'
+        C6=$'\033[38;5;30m'  ; C7=$'\033[38;5;23m'
+        LC1=$'\033[38;5;51m' ; LC2=$'\033[38;5;87m' ; LC3=$'\033[38;5;123m' ; LCA=$'\033[38;5;80m'
+        SCAN=$'\033[1;38;5;159m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+    magenta)
+        BG_RGB="1f/0a/1a"  ; FG_RGB="f0/6e/c5"  ; CUR_RGB="ff/3e/b5"
+        BG_ANSI="{7967, 2570, 6682}"  ; FG_ANSI="{61680, 28270, 50629}"  ; CUR_ANSI="{65535, 15934, 46517}"
+        HEAD=$'\033[1;38;5;231m' ; C1=$'\033[1;38;5;219m' ; C2=$'\033[38;5;213m'
+        C3=$'\033[38;5;206m' ; C4=$'\033[38;5;198m' ; C5=$'\033[38;5;162m'
+        C6=$'\033[38;5;127m' ; C7=$'\033[38;5;90m'
+        LC1=$'\033[38;5;198m' ; LC2=$'\033[38;5;205m' ; LC3=$'\033[38;5;213m' ; LCA=$'\033[38;5;206m'
+        SCAN=$'\033[1;38;5;219m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+    green)
+        BG_RGB="0a/1a/0e"  ; FG_RGB="4e/e6/5c"  ; CUR_RGB="00/ff/41"
+        BG_ANSI="{2570, 6682, 3598}"  ; FG_ANSI="{20046, 58982, 23644}"  ; CUR_ANSI="{0, 65535, 16705}"
+        HEAD=$'\033[1;38;5;231m' ; C1=$'\033[1;38;5;155m' ; C2=$'\033[38;5;119m'
+        C3=$'\033[38;5;82m'  ; C4=$'\033[38;5;46m'  ; C5=$'\033[38;5;34m'
+        C6=$'\033[38;5;28m'  ; C7=$'\033[38;5;22m'
+        LC1=$'\033[38;5;46m' ; LC2=$'\033[38;5;82m' ; LC3=$'\033[38;5;119m' ; LCA=$'\033[38;5;76m'
+        SCAN=$'\033[1;38;5;155m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+    blue)
+        BG_RGB="0a/0e/1f"  ; FG_RGB="4e/8e/e6"  ; CUR_RGB="3e/7e/ff"
+        BG_ANSI="{2570, 3598, 7967}"  ; FG_ANSI="{20046, 36494, 58982}"  ; CUR_ANSI="{15934, 32382, 65535}"
+        HEAD=$'\033[1;38;5;231m' ; C1=$'\033[1;38;5;153m' ; C2=$'\033[38;5;111m'
+        C3=$'\033[38;5;75m'  ; C4=$'\033[38;5;39m'  ; C5=$'\033[38;5;33m'
+        C6=$'\033[38;5;27m'  ; C7=$'\033[38;5;18m'
+        LC1=$'\033[38;5;33m' ; LC2=$'\033[38;5;39m' ; LC3=$'\033[38;5;75m' ; LCA=$'\033[38;5;69m'
+        SCAN=$'\033[1;38;5;153m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+    purple)
+        BG_RGB="16/0a/1f"  ; FG_RGB="b4/6e/f0"  ; CUR_RGB="9d/3e/ff"
+        BG_ANSI="{5654, 2570, 7967}"  ; FG_ANSI="{46260, 28270, 61680}"  ; CUR_ANSI="{40349, 15934, 65535}"
+        HEAD=$'\033[1;38;5;231m' ; C1=$'\033[1;38;5;189m' ; C2=$'\033[38;5;177m'
+        C3=$'\033[38;5;141m' ; C4=$'\033[38;5;135m' ; C5=$'\033[38;5;99m'
+        C6=$'\033[38;5;91m'  ; C7=$'\033[38;5;54m'
+        LC1=$'\033[38;5;135m' ; LC2=$'\033[38;5;141m' ; LC3=$'\033[38;5;177m' ; LCA=$'\033[38;5;147m'
+        SCAN=$'\033[1;38;5;189m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+    *)
+        BG_RGB="14/0e/21"  ; FG_RGB="f2/b3/2a"  ; CUR_RGB="ff/95/00"
+        BG_ANSI="{5140, 3598, 8481}"  ; FG_ANSI="{62194, 46003, 10794}"  ; CUR_ANSI="{65535, 38000, 0}"
+        HEAD=$'\033[1;38;5;230m' ; C1=$'\033[1;38;5;220m' ; C2=$'\033[38;5;214m'
+        C3=$'\033[38;5;208m' ; C4=$'\033[38;5;172m' ; C5=$'\033[38;5;130m'
+        C6=$'\033[38;5;94m'  ; C7=$'\033[38;5;58m'
+        LC1=$'\033[38;5;208m' ; LC2=$'\033[38;5;214m' ; LC3=$'\033[38;5;220m' ; LCA=$'\033[38;5;214m'
+        SCAN=$'\033[1;38;5;230m' ; FLASH=$'\033[1;38;5;231m'
+        ;;
+esac
+
+DIM=$'\033[38;5;240m' ; RST=$'\033[0m'
+
+printf '\033]11;rgb:%s\033\\' "$BG_RGB"
+printf '\033]10;rgb:%s\033\\' "$FG_RGB"
+printf '\033]12;rgb:%s\033\\' "$CUR_RGB"
+osascript -e "
+tell application \"Terminal\"
+    tell current settings of selected tab of front window
+        set background color to $BG_ANSI
+        set normal text color to $FG_ANSI
+        set cursor color to $CUR_ANSI
+    end tell
+end tell
+" &>/dev/null &
+
+clear ; tput civis
+COLS=$(tput cols) ; ROWS=$(tput lines)
+CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&*<>{}[]|~"
+NCHARS=${#CHARS}
+
+LOGO=(
+"      ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗  "
+"     ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝  "
+"     ██║     ██║     ███████║██║   ██║██║  ██║█████╗    "
+"     ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝    "
+"     ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗  "
+"      ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝  "
+"                                                        "
+"          ██████╗ ██████╗ ██████╗ ███████╗               "
+"         ██╔════╝██╔═══██╗██╔══██╗██╔════╝               "
+"         ██║     ██║   ██║██║  ██║█████╗                 "
+"         ██║     ██║   ██║██║  ██║██╔══╝                 "
+"         ╚██████╗╚██████╔╝██████╔╝███████╗               "
+"          ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝               "
+)
+LCOLORS=("$LC1" "$LCA" "$LCA" "$LC3" "$LC3" "$LC3" "$DIM" "$LC1" "$LCA" "$LCA" "$LC3" "$LC3" "$LC3")
+LOGO_ROWS=${#LOGO[@]}
+LOGO_WIDTH=58
+logo_c0=$(( (COLS - LOGO_WIDTH) / 2 ))
+(( logo_c0 < 1 )) && logo_c0=1
+logo_r0=$(( (ROWS / 2 - 1) - 6 ))
+(( logo_r0 < 2 )) && logo_r0=2
+
+declare -a logo_at
+for (( li=0; li<LOGO_ROWS; li++ )); do logo_at[$li]=$(( logo_r0 + li )); done
+
+last_logo_r=${logo_at[$((LOGO_ROWS-1))]}
+TAG_ROW=$(( last_logo_r + 2 ))
+LOAD_ROW=$(( TAG_ROW + 2 ))
+LAUNCH_ROW=$(( LOAD_ROW + 2 ))
+
+TAGLINE="⚡ Opus 4.6 · 1M Context · Claude Max ⚡"
+tag_c0=$(( (COLS - ${#TAGLINE}) / 2 ))
+(( tag_c0 < 1 )) && tag_c0=1
+LOAD_C0=$(( (COLS - 46) / 2 ))
+(( LOAD_C0 < 1 )) && LOAD_C0=1
+BLOCKS=("░" "▒" "▓" "█")
+
+# Rain init
+declare -a dy dspeed dlen
+for (( c=0; c<COLS; c++ )); do
+    dy[$c]=$(( -(RANDOM % (ROWS + 10)) ))
+    dspeed[$c]=$(( (RANDOM % 3) + 1 ))
+    dlen[$c]=$(( (RANDOM % 10) + 5 ))
+done
+
+# ══════════════════════════════════════════════════════════════════════
+# 1. RAIN (1.2s)
+# ══════════════════════════════════════════════════════════════════════
+for (( f=0; f<30; f++ )); do
+    buf=""
+    for (( c=0; c<COLS; c+=2 )); do
+        y=${dy[$c]}; len=${dlen[$c]}; spd=${dspeed[$c]}
+        dy[$c]=$(( y + spd ))
+        (( y >= 0 && y < ROWS )) && buf+="\033[$(( y+1 ));$(( c+1 ))H${HEAD}${CHARS:$((RANDOM % NCHARS)):1}"
+        (( y-1 >= 0 && y-1 < ROWS )) && buf+="\033[$(( y ));$(( c+1 ))H${C1}${CHARS:$((RANDOM % NCHARS)):1}"
+        (( y-2 >= 0 && y-2 < ROWS )) && buf+="\033[$(( y-1 ));$(( c+1 ))H${C2}${CHARS:$((RANDOM % NCHARS)):1}"
+        (( y-3 >= 0 && y-3 < ROWS )) && buf+="\033[$(( y-2 ));$(( c+1 ))H${C3}${CHARS:$((RANDOM % NCHARS)):1}"
+        for (( t=4; t<=len; t++ )); do
+            ty=$(( y - t ))
+            (( ty >= 0 && ty < ROWS )) && {
+                (( t < len-2 )) && buf+="\033[$(( ty+1 ));$(( c+1 ))H${C5}${CHARS:$((RANDOM % NCHARS)):1}"
+                (( t >= len-2 )) && buf+="\033[$(( ty+1 ));$(( c+1 ))H${C6}."
+            }
+        done
+        ey=$(( y - len - 1 ))
+        (( ey >= 0 && ey < ROWS )) && buf+="\033[$(( ey+1 ));$(( c+1 ))H "
+        if (( y - len > ROWS )); then
+            dy[$c]=$(( -(RANDOM % (ROWS/3)) - 1 ))
+            dspeed[$c]=$(( (RANDOM % 3) + 1 )) ; dlen[$c]=$(( (RANDOM % 10) + 5 ))
+        fi
+    done
+    printf '%b' "$buf"
+    sleep 0.035
+done
+
+# ══════════════════════════════════════════════════════════════════════
+# 2. SCANLINE LOGO REVEAL + RAIN DRAIN (~1s)
+#    Rain drains. Logo lines appear top-to-bottom as rain clears each row.
+#    Each revealed row gets its full line cleared first (no remnant pixels).
+# ══════════════════════════════════════════════════════════════════════
+
+scan_li=0
+
+for (( f=0; f<26; f++ )); do
+    buf=""
+
+    # Rain drain
+    for (( c=0; c<COLS; c+=2 )); do
+        y=${dy[$c]}; len=${dlen[$c]}
+        (( y - len - 2 >= ROWS )) && continue
+        dy[$c]=$(( y + 4 ))
+        (( y >= 0 && y < ROWS )) && buf+="\033[$(( y+1 ));$(( c+1 ))H${C6}${CHARS:$((RANDOM % NCHARS)):1}"
+        for (( e=1; e<=len+2; e++ )); do
+            ey=$(( y - e )); (( ey >= 0 && ey < ROWS )) && buf+="\033[$(( ey+1 ));$(( c+1 ))H "
+        done
+    done
+
+    # Reveal next logo line every 2 frames
+    if (( f % 2 == 0 && scan_li < LOGO_ROWS )); then
+        r=${logo_at[$scan_li]}
+        # Clear the ENTIRE row first (kills any remnant rain pixels)
+        buf+="\033[${r};1H\033[2K"
+        # Draw logo line bright
+        buf+="\033[${r};${logo_c0}H${FLASH}${LOGO[$scan_li]}${RST}"
+        scan_li=$(( scan_li + 1 ))
+    fi
+
+    # Repaint all previously revealed lines in theme colors (on top of everything)
+    for (( li=0; li<scan_li-1; li++ )); do
+        r=${logo_at[$li]}
+        buf+="\033[${r};${logo_c0}H${LCOLORS[$li]}${LOGO[$li]}${RST}"
+    done
+
+    printf '%b' "$buf"
+    sleep 0.035
+done
+
+# Final settle: clear entire screen, repaint full logo clean
+buf=""
+for (( r=1; r<=ROWS; r++ )); do buf+="\033[${r};1H\033[2K"; done
+for (( li=0; li<LOGO_ROWS; li++ )); do
+    r=${logo_at[$li]}
+    buf+="\033[${r};${logo_c0}H${LCOLORS[$li]}${LOGO[$li]}${RST}"
+done
+printf '%b' "$buf"
+
+# ══════════════════════════════════════════════════════════════════════
+# 3. TAGLINE + LOADING BAR + LAUNCHING
+# ══════════════════════════════════════════════════════════════════════
+
+sleep 0.2
+
+# Tagline types out first
+printf '\033[%d;%dH' "$TAG_ROW" "$tag_c0"
+for (( i=0; i<${#TAGLINE}; i++ )); do
+    printf '%b%s%b' "$LCA" "${TAGLINE:$i:1}" "$RST"
+    sleep 0.008
+done
+sleep 0.1
+
+# Loading bar — slow and deliberate with fast-slow-fast pacing
+printf '\033[%d;%dH%b%s' "$LOAD_ROW" "$LOAD_C0" "$DIM" "Initializing "
+for (( load_i=0; load_i<30; load_i++ )); do
+    idx=$(( (load_i / 8) % 4 ))
+    printf '\033[%d;%dH%b%s%b' "$LOAD_ROW" "$(( LOAD_C0 + 14 + load_i ))" "$LC1" "${BLOCKS[$idx]}" "$RST"
+    # Fast start, slow middle, fast end
+    if (( load_i < 6 )); then
+        sleep 0.02
+    elif (( load_i < 24 )); then
+        sleep 0.06
+    else
+        sleep 0.02
+    fi
+done
+printf '\033[%d;%dH %bReady%b' "$LOAD_ROW" "$(( LOAD_C0 + 44 ))" "$LC3" "$RST"
+sleep 0.15
+
+LAUNCH_TEXT="Launching Claude..."
+launch_c0=$(( (COLS - ${#LAUNCH_TEXT}) / 2 ))
+printf '\033[%d;%dH\033[1;37m%s%b' "$LAUNCH_ROW" "$launch_c0" "$LAUNCH_TEXT" "$RST"
+
+# Brief hold — bar just filled, everything looks ready
+sleep 0.4
+
+# ══════════════════════════════════════════════════════════════════════
+# 5. GLITCH OUT (3s) — slow flashes → faster → frantic → terminator
+#    Random logo lines flash white or blank out. Intensity builds.
+# ══════════════════════════════════════════════════════════════════════
+
+# Helper: repaint full logo + text clean
+repaint_all() {
+    local b=""
+    for (( li=0; li<LOGO_ROWS; li++ )); do
+        r=${logo_at[$li]}
+        b+="\033[${r};${logo_c0}H${LCOLORS[$li]}${LOGO[$li]}${RST}"
+    done
+    b+="\033[${TAG_ROW};${tag_c0}H${LCA}${TAGLINE}${RST}"
+    printf '%b' "$b"
+}
+
+# All rows that could be glitched (logo + text rows)
+ALL_ROWS=()
+for (( li=0; li<LOGO_ROWS; li++ )); do ALL_ROWS+=(${logo_at[$li]}); done
+ALL_ROWS+=($TAG_ROW $LOAD_ROW $LAUNCH_ROW)
+NUM_ROWS=${#ALL_ROWS[@]}
+
+for (( f=0; f<35; f++ )); do
+    # Quick ramp to chaos
+    if (( f < 4 )); then
+        (( f % 2 != 0 )) && { sleep 0.035; continue; }
+        num_glitch=2
+    elif (( f < 10 )); then
+        num_glitch=$(( 3 + RANDOM % 3 ))
+    elif (( f < 20 )); then
+        num_glitch=$(( 6 + RANDOM % 4 ))
+    else
+        # Total chaos
+        num_glitch=$(( 8 + RANDOM % 5 ))
+    fi
+
+    buf=""
+
+    # Glitch effects — multiple types for variety
+    for (( g=0; g<num_glitch; g++ )); do
+        ri=$(( RANDOM % NUM_ROWS ))
+        row=${ALL_ROWS[$ri]}
+        action=$(( RANDOM % 7 ))
+
+        if (( action == 0 )); then
+            # Blank the row completely
+            buf+="\033[${row};1H\033[2K"
+        elif (( action == 1 )); then
+            # Flash white
+            if (( ri < LOGO_ROWS )); then
+                buf+="\033[${row};${logo_c0}H${FLASH}${LOGO[$ri]}${RST}"
+            fi
+        elif (( action == 2 )); then
+            # Scan color (shifted hue)
+            if (( ri < LOGO_ROWS )); then
+                buf+="\033[${row};${logo_c0}H${SCAN}${LOGO[$ri]}${RST}"
+            fi
+        elif (( action == 3 )); then
+            # Horizontal offset glitch — shift the line a few chars right
+            if (( ri < LOGO_ROWS )); then
+                shift=$(( RANDOM % 6 + 1 ))
+                buf+="\033[${row};1H\033[2K"
+                buf+="\033[${row};$(( logo_c0 + shift ))H${LCOLORS[$ri]}${LOGO[$ri]}${RST}"
+            fi
+        elif (( action == 4 )); then
+            # Horizontal offset glitch — shift left
+            if (( ri < LOGO_ROWS )); then
+                shift=$(( RANDOM % 4 + 1 ))
+                nc=$(( logo_c0 - shift ))
+                (( nc < 1 )) && nc=1
+                buf+="\033[${row};1H\033[2K"
+                buf+="\033[${row};${nc}H${LCOLORS[$ri]}${LOGO[$ri]}${RST}"
+            fi
+        elif (( action == 5 )); then
+            # Dim flicker
+            if (( ri < LOGO_ROWS )); then
+                buf+="\033[${row};${logo_c0}H${DIM}${LOGO[$ri]}${RST}"
+            fi
+        else
+            # Partial blank — blank left or right half of a logo row
+            if (( ri < LOGO_ROWS )); then
+                if (( RANDOM % 2 )); then
+                    # blank left half
+                    buf+="\033[${row};1H\033[2K"
+                    buf+="\033[${row};$(( logo_c0 + LOGO_WIDTH/2 ))H${LCOLORS[$ri]}${LOGO[$ri]:$((LOGO_WIDTH/2))}${RST}"
+                else
+                    # blank right half — just clear from midpoint
+                    mid=$(( logo_c0 + LOGO_WIDTH / 2 ))
+                    buf+="\033[${row};${mid}H\033[K"
+                fi
+            fi
+        fi
+    done
+
+    # In frantic phase, randomly flash entire screen white for 1-frame bursts
+    if (( f >= 15 && RANDOM % 4 == 0 )); then
+        for (( li=0; li<LOGO_ROWS; li++ )); do
+            r=${logo_at[$li]}
+            buf+="\033[${r};${logo_c0}H${FLASH}${LOGO[$li]}${RST}"
+        done
+    fi
+
+    printf '%b' "$buf"
+    sleep 0.035
+
+    # Restore on non-frantic frames
+    if (( f < 10 )); then
+        sleep 0.02
+        repaint_all
+    fi
+done
+
+# Glitch to black — lines vanish in random bursts
+remaining=()
+for (( i=0; i<NUM_ROWS; i++ )); do remaining+=($i); done
+while (( ${#remaining[@]} > 0 )); do
+    # Kill 2-4 random rows per frame
+    kill_count=$(( 2 + RANDOM % 3 ))
+    (( kill_count > ${#remaining[@]} )) && kill_count=${#remaining[@]}
+    buf=""
+    for (( k=0; k<kill_count; k++ )); do
+        pick=$(( RANDOM % ${#remaining[@]} ))
+        ri=${remaining[$pick]}
+        row=${ALL_ROWS[$ri]}
+        buf+="\033[${row};1H\033[2K"
+        # Remove from remaining
+        remaining=("${remaining[@]:0:$pick}" "${remaining[@]:$((pick+1))}")
+    done
+    printf '%b' "$buf"
+    sleep 0.03
+done
+sleep 0.1
+
+# ══════════════════════════════════════════════════════════════════════
+# 6. CRT TERMINATOR SHUTDOWN
+# ══════════════════════════════════════════════════════════════════════
+
+# Vertical collapse
+half=$(( ROWS / 2 ))
+for (( offset=0; offset<=half; offset++ )); do
+    top=$(( offset + 1 )) ; bot=$(( ROWS - offset ))
+    printf '\033[%d;1H\033[2K' "$top"
+    (( bot != top )) && printf '\033[%d;1H\033[2K' "$bot"
+    sleep 0.01
+done
+
+# Scan line
+center_r=$(( half + 1 ))
+printf '\033[%d;1H%b' "$center_r" "$SCAN"
+for (( s=0; s<COLS; s++ )); do printf '─'; done
+printf '%b' "$RST"
+sleep 0.08
+
+# Shrink
+for (( margin=0; margin<=COLS/2; margin+=4 )); do
+    printf '\033[%d;1H\033[2K' "$center_r"
+    left=$(( margin + 1 )) ; right=$(( COLS - margin ))
+    if (( right > left )); then
+        printf '\033[%d;%dH%b' "$center_r" "$left" "$SCAN"
+        for (( x=left; x<=right; x++ )); do printf '─'; done
+        printf '%b' "$RST"
+    fi
+    sleep 0.015
+done
+
+# Dot
+printf '\033[%d;1H\033[2K' "$center_r"
+printf '\033[%d;%dH%b·%b' "$center_r" "$(( COLS/2 ))" "$FLASH" "$RST"
+sleep 0.08
+printf '\033[%d;1H\033[2K' "$center_r"
+sleep 0.12
+
+tput cnorm ; clear
+exec /opt/homebrew/bin/claude

@@ -1,0 +1,52 @@
+#!/bin/bash
+# claudeglow — Activates a neon cyberpunk color theme in Terminal
+# Uses OSC escape sequences (works reliably across Terminal.app versions)
+# Run 'claudeglow reset' to restore defaults
+
+if [[ "$1" == "reset" ]]; then
+    # Reset to Terminal's default colors
+    printf '\033]110\033\\'   # reset foreground
+    printf '\033]111\033\\'   # reset background
+    printf '\033]112\033\\'   # reset cursor
+    echo -e "\033[38;5;240mTheme reset to defaults.\033[0m"
+    exit 0
+fi
+
+# Apply to current window via OSC sequences
+# Background: deep dark with purple tint (#140e21)
+printf '\033]11;rgb:14/0e/21\033\\'
+
+# Foreground text: warm amber (#f2b32a)
+printf '\033]10;rgb:f2/b3/2a\033\\'
+
+# Cursor: bright orange (#ff9500)
+printf '\033]12;rgb:ff/95/00\033\\'
+
+# Bold text: gold
+printf '\033]5;0;rgb:ff/d7/4e\033\\'
+
+# Now apply to ALL open Terminal windows via AppleScript
+osascript <<'EOF' 2>/dev/null
+tell application "Terminal"
+    repeat with w in every window
+        repeat with t in every tab of w
+            tell current settings of t
+                set background color to {5140, 3598, 8481}
+                set normal text color to {62194, 46003, 10794}
+                set cursor color to {65535, 38000, 0}
+                set bold text color to {65535, 55000, 20000}
+                set selection color to {20000, 12000, 8000}
+            end tell
+        end repeat
+    end repeat
+end tell
+EOF
+
+echo ""
+echo -e "\033[1;38;5;208m⚡ Claude Glow activated ⚡\033[0m"
+echo ""
+echo -e "\033[38;5;214m  Background:  \033[48;5;53m  deep purple  \033[0m"
+echo -e "\033[38;5;214m  Text:        \033[38;5;214m  warm amber   \033[0m"
+echo -e "\033[38;5;214m  Cursor:      \033[38;5;208m  bright orange\033[0m"
+echo ""
+echo -e "\033[38;5;240m  Run 'claudeglow reset' to restore defaults\033[0m"

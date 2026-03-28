@@ -1,0 +1,52 @@
+#!/bin/bash
+# claudewall — opens 6 Terminal windows running Claude Code in a 3x2 grid
+# Each window gets a different color theme launch animation
+
+THEMES=("orange" "cyan" "magenta" "green" "blue" "purple")
+
+osascript - "${THEMES[@]}" <<'APPLESCRIPT'
+on run argv
+    set themes to argv
+
+    tell application "Terminal"
+        activate
+        delay 0.3
+
+        tell application "Finder"
+            set screenBounds to bounds of window of desktop
+            set screenWidth to item 3 of screenBounds
+            set screenHeight to item 4 of screenBounds
+        end tell
+
+        set menuBar to 25
+        set dockWidth to 40
+        set pad to 8
+        set gap to 8
+
+        set areaX to dockWidth + pad
+        set areaY to menuBar + pad
+        set areaW to screenWidth - areaX - pad
+        set areaH to screenHeight - areaY - pad
+
+        set cols to 3
+        set rows to 2
+        set winW to (areaW - (gap * (cols - 1))) / cols
+        set winH to (areaH - (gap * (rows - 1))) / rows
+
+        set idx to 1
+        repeat with row from 0 to (rows - 1)
+            repeat with col from 0 to (cols - 1)
+                set x1 to areaX + (col * (winW + gap))
+                set y1 to areaY + (row * (winH + gap))
+                set x2 to x1 + winW
+                set y2 to y1 + winH
+
+                set themeColor to item idx of themes
+                do script "claudelaunch " & themeColor
+                set bounds of front window to {x1, y1, x2, y2}
+                set idx to idx + 1
+            end repeat
+        end repeat
+    end tell
+end run
+APPLESCRIPT
